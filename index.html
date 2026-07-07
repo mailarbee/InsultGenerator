@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>L'Académie des Critiques Raffinées</title>
+
+<link rel="manifest" href="manifest.json">
+<meta name="theme-color" content="#1e3327">
+<meta name="description" content="Générateur trilingue de critiques sophistiquées — français, svenska, English.">
+<link rel="icon" href="favicon-32.png" sizes="32x32" type="image/png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Critiques">
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,500;0,700;0,900;1,600&family=Lora:ital,wght@0,400;0,500;0,600;1,400&family=Inter:wght@500;600&display=swap');
+
+  :root{
+    --ink:#20241f;
+    --paper:#f4ecd8;
+    --paper-dark:#e9dfc4;
+    --bottle:#1e3327;
+    --bottle-deep:#152219;
+    --burgundy:#7c2a2a;
+    --burgundy-deep:#5c1e1e;
+    --gold:#af8a4e;
+    --gold-light:#d4b876;
+    --sage:#5f6f52;
+  }
+
+  *{box-sizing:border-box;}
+
+  body{
+    margin:0;
+    min-height:100vh;
+    background:
+      radial-gradient(ellipse at top, #24402f 0%, var(--bottle) 55%, var(--bottle-deep) 100%);
+    font-family:'Lora', serif;
+    color:var(--ink);
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:40px 16px;
+  }
+
+  .frame{
+    width:100%;
+    max-width:640px;
+    background:var(--paper);
+    background-image:
+      radial-gradient(circle at 10% 15%, rgba(175,138,78,0.07), transparent 40%),
+      radial-gradient(circle at 90% 85%, rgba(124,42,42,0.06), transparent 45%);
+    border-radius:6px;
+    position:relative;
+    padding:14px;
+    box-shadow:
+      0 30px 60px -20px rgba(0,0,0,0.55),
+      0 0 0 1px rgba(0,0,0,0.15);
+  }
+
+  .frame::before{
+    content:"";
+    position:absolute;
+    inset:14px;
+    border:1.5px solid var(--gold);
+    border-radius:3px;
+    pointer-events:none;
+    opacity:0.55;
+  }
+
+  .inner{
+    position:relative;
+    padding:38px 34px 30px;
+  }
+
+  .crest{
+    display:flex;
+    justify-content:center;
+    margin-bottom:6px;
+  }
+  .crest svg{ width:52px; height:52px; opacity:0.9; }
+
+  h1{
+    font-family:'Playfair Display', serif;
+    font-weight:700;
+    font-style:italic;
+    text-align:center;
+    font-size:1.7rem;
+    line-height:1.25;
+    margin:6px 0 4px;
+    color:var(--bottle-deep);
+    letter-spacing:0.2px;
+  }
+
+  .subtitle{
+    text-align:center;
+    font-family:'Inter', sans-serif;
+    font-size:0.68rem;
+    letter-spacing:0.22em;
+    text-transform:uppercase;
+    color:var(--gold);
+    font-weight:600;
+    margin-bottom:22px;
+  }
+
+  .rule{
+    height:1px;
+    background:linear-gradient(to right, transparent, var(--gold), transparent);
+    margin:0 0 24px;
+    opacity:0.7;
+  }
+
+  /* Language tabs styled as wax-seal-ish toggles */
+  .langbar{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    margin-bottom:26px;
+  }
+  .langbtn{
+    font-family:'Inter', sans-serif;
+    font-size:0.72rem;
+    font-weight:600;
+    letter-spacing:0.08em;
+    padding:8px 16px;
+    border-radius:999px;
+    border:1.5px solid var(--gold);
+    background:transparent;
+    color:var(--bottle-deep);
+    cursor:pointer;
+    transition:all 0.25s ease;
+  }
+  .langbtn:hover{ background:rgba(175,138,78,0.15); }
+  .langbtn.active{
+    background:var(--burgundy);
+    border-color:var(--burgundy);
+    color:var(--paper);
+    box-shadow:0 3px 10px rgba(124,42,42,0.35);
+  }
+
+  label.fieldlabel{
+    display:block;
+    font-family:'Inter', sans-serif;
+    font-size:0.68rem;
+    letter-spacing:0.18em;
+    text-transform:uppercase;
+    color:var(--sage);
+    margin-bottom:8px;
+    font-weight:600;
+  }
+
+  input#nameInput{
+    width:100%;
+    font-family:'Lora', serif;
+    font-size:1.05rem;
+    font-style:italic;
+    padding:12px 16px;
+    border:none;
+    border-bottom:2px solid var(--gold);
+    background:var(--paper-dark);
+    color:var(--ink);
+    border-radius:3px 3px 0 0;
+    outline:none;
+    margin-bottom:22px;
+    transition:border-color 0.2s;
+  }
+  input#nameInput:focus{ border-color:var(--burgundy); }
+  input#nameInput::placeholder{ color:#8a8270; font-style:italic; }
+
+  .stamp-wrap{ display:flex; justify-content:center; margin-bottom:8px; }
+
+  button#genBtn{
+    font-family:'Playfair Display', serif;
+    font-weight:700;
+    font-size:1rem;
+    letter-spacing:0.03em;
+    color:var(--paper);
+    background:radial-gradient(circle at 35% 30%, var(--burgundy) 0%, var(--burgundy-deep) 80%);
+    border:none;
+    padding:16px 40px;
+    border-radius:999px;
+    cursor:pointer;
+    position:relative;
+    box-shadow:
+      0 8px 18px rgba(92,30,30,0.45),
+      inset 0 0 0 2px rgba(212,184,118,0.5);
+    transition:transform 0.15s ease, box-shadow 0.15s ease;
+  }
+  button#genBtn:hover{ box-shadow:0 10px 22px rgba(92,30,30,0.55), inset 0 0 0 2px rgba(212,184,118,0.7); }
+  button#genBtn:active{ transform:scale(0.93) rotate(-2deg); }
+
+  .output-frame{
+    margin-top:30px;
+    min-height:120px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    position:relative;
+    padding:26px 30px;
+    background:var(--paper-dark);
+    border-radius:4px;
+    border:1px solid rgba(175,138,78,0.4);
+  }
+  .output-frame::before, .output-frame::after{
+    position:absolute;
+    font-family:'Playfair Display', serif;
+    font-size:2.6rem;
+    color:var(--gold);
+    opacity:0.55;
+    line-height:1;
+  }
+  .output-frame::before{ content:"\201C"; top:6px; left:14px; }
+  .output-frame::after{ content:"\201D"; bottom:-6px; right:14px; }
+
+  #output{
+    font-family:'Lora', serif;
+    font-style:italic;
+    font-size:1.12rem;
+    line-height:1.55;
+    text-align:center;
+    color:var(--bottle-deep);
+  }
+  #output.empty{
+    color:#9a9280;
+    font-size:0.95rem;
+  }
+
+  .toolbar{
+    display:flex;
+    justify-content:center;
+    gap:10px;
+    margin-top:26px;
+    flex-wrap:wrap;
+  }
+  .ghostbtn{
+    font-family:'Inter', sans-serif;
+    font-size:0.7rem;
+    font-weight:600;
+    letter-spacing:0.05em;
+    color:var(--sage);
+    background:transparent;
+    border:1px solid var(--sage);
+    padding:9px 16px;
+    border-radius:999px;
+    cursor:pointer;
+    transition:all 0.2s;
+  }
+  .ghostbtn:hover{ background:var(--sage); color:var(--paper); }
+
+  .count{
+    text-align:center;
+    font-family:'Inter', sans-serif;
+    font-size:0.68rem;
+    letter-spacing:0.1em;
+    color:#8a8270;
+    margin-top:18px;
+  }
+
+  .motto{
+    text-align:center;
+    font-family:'Playfair Display', serif;
+    font-style:italic;
+    font-size:0.72rem;
+    color:var(--gold);
+    letter-spacing:0.04em;
+    margin-top:22px;
+    opacity:0.85;
+  }
+
+  @media (max-width:480px){
+    .inner{ padding:30px 18px 24px; }
+    h1{ font-size:1.35rem; }
+    button#genBtn{ padding:14px 30px; font-size:0.9rem; }
+  }
+</style>
+</head>
+<body>
+
+<div class="frame">
+  <div class="inner">
+
+    <div class="crest">
+      <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <path d="M32 4 L54 14 V30 C54 44 44 54 32 60 C20 54 10 44 10 30 V14 Z" stroke="#af8a4e" stroke-width="2"/>
+        <path d="M32 16 L32 44 M22 26 L42 26" stroke="#7c2a2a" stroke-width="2.2" stroke-linecap="round"/>
+        <circle cx="32" cy="16" r="3" fill="#af8a4e"/>
+      </svg>
+    </div>
+
+    <h1 id="title">L'Académie des Critiques Raffinées</h1>
+    <div class="subtitle" id="subtitle">Établie pour l'art délicat de l'insulte polie</div>
+
+    <div class="rule"></div>
+
+    <div class="langbar">
+      <button class="langbtn" data-lang="sv">SVENSKA</button>
+      <button class="langbtn active" data-lang="fr">FRANÇAIS</button>
+      <button class="langbtn" data-lang="en">ENGLISH</button>
+    </div>
+
+    <label class="fieldlabel" id="nameLabel">Le nom du destinataire</label>
+    <input type="text" id="nameInput" placeholder="Entrez un nom…">
+
+    <div class="stamp-wrap">
+      <button id="genBtn">Générer</button>
+    </div>
+
+    <div class="output-frame">
+      <div id="output" class="empty">Votre critique apparaîtra ici, avec toute la délicatesse requise.</div>
+    </div>
+
+    <div class="toolbar">
+      <input type="file" id="fileInput" accept=".json" style="display:none">
+      <button class="ghostbtn" id="importBtn">Importer JSON</button>
+      <button class="ghostbtn" id="exportBtn">Exporter JSON</button>
+    </div>
+
+    <p class="count" id="count"></p>
+    <p class="motto">Bona Cogitata · Bona Verba · Bona Facta · Memento Ridere</p>
+
+  </div>
+</div>
+
+<script>
+// ---------- DATA ----------
+const insultData = {
+  fr: ["Il est fascinant, [NAME], de voir comment vous baissez le QI moyen de la pièce par votre simple présence.", "Si l'incompétence était une discipline olympique, [NAME], vous ne seriez même pas qualifié pour être dans le public.", "Discuter avec vous, [NAME], revient à jouer aux échecs avec un pigeon : vous renversez les pièces et vous paradez comme si vous aviez gagné.", "Vous possédez un talent unique, [NAME], celui de faire de votre vie une leçon magistrale sur ce qu'il ne faut pas faire en société.", "[NAME], votre capacité à ignorer la logique est impressionnante ; c'est presque un don.", "On dirait presque, [NAME], que vous vous êtes donné pour mission de prouver que l'évolution peut parfois faire une pause.", "Je vous l'expliquerais bien, [NAME], mais il me manque la patience pédagogique nécessaire pour traduire la réalité dans votre univers.", "Vous voir essayer de raisonner, [NAME], ressemble à un poisson essayant de grimper une montagne : c'est désespérément vain.", "Si vous étiez une épice, [NAME], vous seriez de la farine : techniquement un ingrédient, mais totalement dépourvu de caractère.", "Il est remarquable, [NAME], de voir avec quelle assurance vous émettez des avis sur des sujets que vous ne comprenez pas.", "[NAME], votre présence est comme une réunion le lundi matin : inévitable, longue et profondément décevante.", "Il est remarquable, [NAME], de voir comment vous choisissez toujours le chemin le moins efficace pour atteindre un but simple.", "Si nous vous donnions, [NAME], une quantité infinie de temps, vous ne produiriez qu'une très longue liste de courses.", "Vous avez un talent exceptionnel, [NAME], celui de ne rien dire, mais avec beaucoup de mots.", "Vous demander un conseil, [NAME], revient à demander à un aveugle de guider un randonneur dans le brouillard.", "Votre processus de pensée, [NAME], semble conçu par quelqu'un qui méprise à la fois la logique et l'efficacité.", "Il est réellement impressionnant, [NAME], de voir comment vous parvenez à être si constant dans votre manque de lucidité.", "[NAME], vous êtes la mise à jour logicielle que personne n'a demandée et qui ralentit l'ordinateur.", "Il faut un courage particulier, [NAME], pour être si sûr de soi quand on a si peu à offrir.", "J'admire votre obstination, [NAME], surtout compte tenu du fait que vous avez tort sur presque tout.", "Si l'incompétence était une monnaie, [NAME], vous seriez une puissance mondiale.", "[NAME], vous êtes la preuve vivante qu'il n'est pas nécessaire d'avoir de la substance pour occuper de l'espace.", "Vous écouter, [NAME], ressemble à regarder de la peinture sécher, en moins divertissant.", "Il est triste, [NAME], de voir tout le potentiel que vous n'avez pas.", "Vous avez une capacité unique, [NAME], à rendre chaque pièce où vous entrez un peu moins agréable.", "Si l'introspection était une matière scolaire, [NAME], vous seriez recalé avant même le début du trimestre.", "[NAME], vous êtes la version humaine d'une coquille vide.", "J'ai croisé des poignées de porte avec plus de charisme que vous, [NAME].", "Il est fascinant, [NAME], de voir que vous gardez votre optimisme malgré toutes vos lacunes évidentes.", "Si je voulais un avis inutile, [NAME], je demanderais à une pierre ; elle est au moins silencieuse.", "[NAME], vous parvenez toujours à trouver la manière la plus complexe d'échouer.", "C'est un talent en soi, [NAME], d'être toujours la personne la moins préparée dans n'importe quelle situation.", "[NAME], vous êtes l'équivalent humain d'un e-mail que l'on supprime sans l'ouvrir.", "Votre niveau de connaissance, [NAME], est comme une flaque dans le désert : superficiel et éphémère.", "Je pourrais vous expliquer cela, [NAME], mais je ne voudrais pas briser votre belle illusion de compétence.", "[NAME], vous réussissez à être si agaçant que cela en devient une forme d'art.", "Il est impressionnant de voir comment, [NAME], vous ne laissez jamais les faits contredire vos erreurs.", "Si vous étiez un film, [NAME], ce serait deux heures d'écran de veille.", "Vous avez vraiment trouvé votre créneau, [NAME] : être une source constante de légère frustration.", "On dirait presque, [NAME], que vous avez étudié comment faire les choses mal pour ensuite y exceller.", "[NAME], vous êtes comme un puzzle où quelqu'un aurait mélangé les pièces avec un autre jeu.", "J'admire comment, [NAME], vous ne laissez jamais le manque de talent vous empêcher d'essayer.", "[NAME], vous êtes l'équivalent social d'un procès-verbal de stationnement.", "Si vous étiez un livre, [NAME], vous auriez beaucoup trop de chapitres sur rien du tout.", "C'est une énigme, [NAME], comment vous parvenez à être si actif tout en accomplissant si peu.", "[NAME], vous êtes comme une horloge cassée : vous avez raison une fois par jour, mais par pur hasard.", "Votre présence, [NAME], est comme un bruit de fond irritant qu'on ne peut jamais vraiment couper.", "Vous avez un talent, [NAME], pour transformer le simple en quelque chose d'inutilement compliqué.", "Il est vraiment unique, [NAME], de voir comment vous manquez toujours le point avec une précision totale.", "[NAME], vous êtes l'équivalent social de marcher dans une flaque d'eau avec des chaussettes.", "C'est un don, [NAME], de pouvoir parler si longtemps sans transmettre un seul message utile.", "[NAME], vous êtes comme une mauvaise blague que personne ne rit, même pas vous.", "Je suis impressionné par votre capacité, [NAME], à ne jamais laisser un bon argument vous convaincre.", "[NAME], vous êtes comme un itinéraire écrit dans une langue que personne ne parle.", "C'est un cadeau, [NAME], de pouvoir abaisser le niveau d'énergie d'une pièce dès que vous y entrez.", "Si vous étiez un logiciel, [NAME], vous seriez toujours en version bêta – pour l'éternité.", "[NAME], vous êtes comme un nuage : quand vous disparaissez, la journée devient tout de suite plus ensoleillée.", "Il est fascinant de voir comment, [NAME], vous êtes si convaincu de votre génie malgré l'évidence du contraire.", "[NAME], vous êtes comme le manuel d'utilisation d'un produit qui n'existe pas.", "J'admire votre persévérance, [NAME], surtout quand vous luttez pour avoir tort.", "[NAME], vous êtes l'équivalent social de renverser du lait sur un clavier.", "C'est un exploit, [NAME], d'être si constamment inintéressant.", "[NAME], vous êtes comme un écho dans une salle vide : bruyant, mais sans aucun contenu.", "Si vous étiez une couleur, [NAME], vous seriez 'salle d'attente beige'.", "C'est un talent, [NAME], de pouvoir faire si peu avec autant d'effort.", "[NAME], vous êtes comme une série télévisée qui aurait dû être annulée après le premier épisode.", "Je vous expliquerais pourquoi vous avez tort, [NAME], mais ce serait comme expliquer les couleurs à un mur.", "[NAME], vous êtes comme une feuille blanche : il y a beaucoup d'espace, mais aucun texte.", "Il est impressionnant de voir comment, [NAME], vous parvenez à trouver des erreurs là où il n'y en a pas.", "[NAME], vous êtes l'équivalent social d'un bus en retard.", "C'est un don, [NAME], de pouvoir être si sûr de soi sans aucun fondement.", "[NAME], vous êtes comme une note sans aucune signification.", "J'admire comment, [NAME], vous parvenez toujours à choisir le chemin le moins logique.", "[NAME], vous êtes comme un vieil annuaire : personne ne vous utilise plus.", "C'est un talent, [NAME], de pouvoir assombrir l'ambiance de n'importe quel contexte.", "[NAME], vous êtes comme un parapluie troué sous un orage.", "Il est impressionnant de voir comment, [NAME], vous persistez dans votre incompétence.", "[NAME], vous êtes l'équivalent social d'oublier son mot de passe.", "J'admire votre capacité, [NAME], à ne jamais laisser la lucidité vous arrêter.", "[NAME], vous êtes comme une bande-annonce qui montre tout ce qu'il y a de pire.", "C'est une énigme, [NAME], comment vous êtes si occupé mais si peu productif.", "[NAME], vous êtes comme une pointe de crayon cassée : inutile et irritante.", "C'est un exploit, [NAME], d'être si constamment prévisible.", "[NAME], vous êtes l'équivalent social de marcher sur une brique de Lego.", "Je vous ferais un compliment, [NAME], mais je ne voudrais pas vous mentir.", "[NAME], vous êtes comme une lettre qui n'est jamais arrivée.", "Il est impressionnant de voir comment, [NAME], vous êtes si fier avec si peu.", "[NAME], vous êtes comme une musique d'attente qui ne finit jamais.", "C'est un talent, [NAME], de pouvoir rendre une chose simple incroyablement complexe.", "[NAME], vous êtes l'équivalent social de lire le mode d'emploi d'un grille-pain.", "J'admire votre volonté, [NAME], même si le résultat est souvent une catastrophe.", "[NAME], vous êtes comme une ombre en plein soleil : totalement déplacé.", "C'est un talent, [NAME], de pouvoir baisser la moyenne de n'importe quel groupe.", "[NAME], vous êtes comme une phrase inachevée.", "Il est impressionnant de voir comment, [NAME], vous parvenez à être si bruyant pour si peu.", "[NAME], vous êtes l'équivalent social d'un aimant de frigo qui ne colle pas.", "J'admire comment, [NAME], vous trouvez toujours de nouvelles manières de mal comprendre des instructions simples.", "[NAME], vous êtes comme une boussole cassée : vous pointez toujours dans la mauvaise direction.", "C'est un exploit, [NAME], d'être si constamment sans intérêt.", "[NAME], vous êtes la preuve vivante que la quantité ne signifie pas toujours la qualité."],
+  sv: ["Det är fascinerande, [NAME], hur du konsekvent lyckas sänka genomsnitts-IQ:t i rummet bara genom din blotta närvaro.", "Om inkompetens hade varit en olympisk gren, [NAME], så skulle du inte ens ha kvalificerat dig som publik.", "Att diskutera med dig, [NAME], påminner om att spela schack mot en duva; du välter pjäserna och tror att du vunnit.", "Du besitter en unik talang, [NAME], att göra det mesta av ditt liv till en lektion i vad man absolut inte bör göra.", "[NAME], din förmåga att ignorera logik är inget mindre än imponerande – det kräver en sorts talang.", "Det är nästan som att du, [NAME], har gjort det till din livsuppgift att bevisa att evolutionen ibland tar paus.", "Jag skulle förklara det för dig, [NAME], men jag saknar tyvärr de pedagogiska färdigheter som krävs för att nå fram.", "Att se dig försöka resonera, [NAME], är som att se en fisk försöka bestiga ett berg; vackert på sitt sätt, men hopplöst.", "Om du, [NAME], vore en krydda skulle du förmodligen vara mjöl – tekniskt sett en ingrediens, men helt utan karaktär.", "Det är imponerande, [NAME], hur du lyckas ha så starka åsikter om saker du uppenbarligen inte förstår.", "[NAME], din närvaro är som ett molnigt måndagsmorgon-möte: oundvikligt, långdraget och märkbart nedslående.", "Det är anmärkningsvärt, [NAME], hur du alltid lyckas välja den minst effektiva vägen för att nå ett enkelt mål.", "Om vi gav dig, [NAME], en oändlig mängd tid och en skrivmaskin, skulle du förmodligen bara producera en väldigt lång inköpslista.", "Du har en enastående förmåga, [NAME], att säga ingenting, fast med väldigt många ord.", "Att be dig om råd, [NAME], är som att be en blind person att ge vägbeskrivningar i en dimmig skog.", "Din tankeprocess, [NAME], verkar vara designad av någon som föraktar både logik och effektivitet.", "Det är faktiskt imponerande, [NAME], hur du lyckas vara så konsekvent i din brist på insikt.", "Du, [NAME], är som en mjukvaruuppdatering ingen bad om och som dessutom gör datorn långsammare.", "Det krävs en speciell sorts mod, [NAME], att vara så självsäker när man har så lite att komma med.", "Jag beundrar din orubblighet, [NAME], särskilt med tanke på att du har fel i nästan varje enskilt avseende.", "Om inkompetens var pengar, [NAME], skulle du vara en global stormakt.", "Du, [NAME], är ett levande bevis på att man inte behöver någon form av substans för att ta upp plats.", "Att lyssna på dig, [NAME], är som att titta på färg som torkar, fast mindre underhållande.", "Det är sorgligt, [NAME], att se hur mycket potential du inte har.", "Du har en unik förmåga, [NAME], att göra varje rum du kliver in i en aning sämre.", "Om självinsikt var ett ämne i skolan, [NAME], skulle du ha blivit underkänd innan terminen ens börjat.", "Du, [NAME], är som en korrekturfels-version av en människa.", "Jag har träffat dörrhandtag med mer karisma än dig, [NAME].", "Det är fascinerande, [NAME], att du lyckas behålla din optimism trots alla dina uppenbara brister.", "Om jag ville ha en meningslös åsikt, [NAME], skulle jag fråga en sten – den är åtminstone tyst.", "Du, [NAME], lyckas alltid hitta det mest komplicerade sättet att misslyckas på.", "Det är en talang i sig, [NAME], att alltid vara den minst förberedda personen i varje sammanhang.", "Du, [NAME], är den mänskliga motsvarigheten till ett e-postmeddelande man klickar på 'radera' utan att öppna.", "Din kunskapsnivå, [NAME], är som en pöl i en öken – extremt grund och försvinner vid minsta kontakt med verkligheten.", "Jag skulle kunna förklara detta för dig, [NAME], men jag vill inte förstöra din vackra illusion av kompetens.", "Du, [NAME], lyckas vara så irriterande att det nästan blir en konstform.", "Det är imponerande hur du, [NAME], aldrig låter fakta komma i vägen för dina missuppfattningar.", "Om du vore en film, [NAME], skulle det vara en två timmar lång film om en skärmsläckare.", "Du har verkligen hittat din nisch, [NAME]: att vara en konstant källa till mild frustration.", "Det är nästan som att du, [NAME], har studerat hur man gör saker fel för att sedan mästra det.", "Du, [NAME], är som ett pussel där någon har bytt ut bitarna mot helt andra pussel.", "Jag beundrar hur du, [NAME], aldrig låter brist på talang hindra dig från att försöka.", "Du, [NAME], är den sociala motsvarigheten till en parkeringsbot.", "Om du var en bok, [NAME], skulle du ha alldeles för många kapitel om ingenting.", "Det är en gåta, [NAME], hur du lyckas vara så aktiv men ändå åstadkomma så lite.", "Du, [NAME], är som en trasig klocka – du har rätt en gång om dagen, men bara av ren slump.", "Din närvaro, [NAME], är som ett irriterande bakgrundsbrus man aldrig riktigt kan stänga av.", "Du har en talang, [NAME], för att göra det enkelt till något onödigt svårt.", "Det är verkligen unikt, [NAME], hur du alltid lyckas missa poängen med total precision.", "Du, [NAME], är den mänskliga motsvarigheten till att gå i en pöl med strumpor.", "Det är en talang, [NAME], att kunna säga så mycket utan att faktiskt förmedla ett enda värdefullt budskap.", "Du, [NAME], är som ett dåligt skämt som ingen skrattar åt, inte ens du själv.", "Jag är imponerad av din förmåga, [NAME], att aldrig låta ett bra argument övertyga dig.", "Du, [NAME], är som en vägbeskrivning skriven på ett språk ingen förstår.", "Det är en gåva, [NAME], att kunna sänka energinivån i ett rum så fort man kliver in.", "Om du var en mjukvara, [NAME], skulle du fortfarande vara i betastadiet – och aldrig lämna det.", "Du, [NAME], är som ett moln – när du försvinner blir dagen genast mycket soligare.", "Det är fascinerande hur du, [NAME], lyckas vara så övertygad om din egen briljans trots motsatsen.", "Du, [NAME], är som en manual till en produkt som inte finns.", "Jag beundrar din uthållighet, [NAME], särskilt när du kämpar för att ha fel.", "Du, [NAME], är den sociala motsvarigheten till att få mjölk i tangentbordet.", "Det är verkligen en bedrift, [NAME], att vara så konsekvent ointressant.", "Du, [NAME], är som ett eko i en tom sal – högljudd, men utan egentligt innehåll.", "Om du, [NAME], vore en färg skulle du vara 'beige väntrum'.", "Det är en talang, [NAME], att kunna göra så lite med så mycket ansträngning.", "Du, [NAME], är som en tv-serie som borde ha lagts ner efter första avsnittet.", "Jag skulle förklara varför du har fel, [NAME], men det vore som att förklara färg för en vägg.", "Du, [NAME], är som ett tomt papper – det finns mycket utrymme, men ingen text.", "Det är imponerande hur du, [NAME], lyckas hitta fel även där inga finns.", "Du, [NAME], är den sociala motsvarigheten till en försenad buss.", "Det är en gåva, [NAME], att kunna vara så självsäker när man har så lite grund att stå på.", "Du, [NAME], är som en anteckning utan innebörd.", "Jag beundrar hur du, [NAME], alltid lyckas välja den minst logiska vägen.", "Du, [NAME], är som en gammal telefonbok – ingen använder dig längre.", "Det är verkligen en talang, [NAME], att kunna sänka stämningen i vilket sammanhang som helst.", "Du, [NAME], är som en trasig paraply i spöregn.", "Det är imponerande hur du, [NAME], lyckas vara så ihärdig i din egen inkompetens.", "Du, [NAME], är den sociala motsvarigheten till att glömma lösenordet.", "Jag beundrar din förmåga, [NAME], att aldrig låta insikt stoppa dig.", "Du, [NAME], är som en filmtrailer som visar allt det dåliga.", "Det är en gåta, [NAME], hur du lyckas vara så upptagen men så lite produktiv.", "Du, [NAME], är som en trasig pennspets – oanvändbar och irriterande.", "Det är verkligen en bedrift, [NAME], att vara så konsekvent förutsägbar.", "Du, [NAME], är den sociala motsvarigheten till att trampa på en legobit.", "Jag skulle ge dig en komplimang, [NAME], men jag vill inte ljuga för dig.", "Du, [NAME], är som ett brev som aldrig kom fram.", "Det är imponerande hur du, [NAME], lyckas vara så stolt över så lite.", "Du, [NAME], är som en väntmusik som aldrig tar slut.", "Det är en talang, [NAME], att kunna göra en enkel sak så otroligt komplicerad.", "Du, [NAME], är den sociala motsvarigheten till att läsa en bruksanvisning för en brödrost.", "Jag beundrar din vilja, [NAME], även om resultatet oftast blir en katastrof.", "Du, [NAME], är som en skugga i solsken – helt malplacerad.", "Det är verkligen en talang, [NAME], att kunna sänka genomsnittet i vilken grupp som helst.", "Du, [NAME], är som en oavslutad mening.", "Det är imponerande hur du, [NAME], lyckas vara så högljudd om så lite.", "Du, [NAME], är den sociala motsvarigheten till en kylskåpsmagnet som inte fastnar.", "Jag beundrar hur du, [NAME], alltid hittar nya sätt att missförstå enkla instruktioner.", "Du, [NAME], är som en trasig kompass – pekar alltid åt fel håll.", "Det är verkligen en bedrift, [NAME], att kunna vara så konsekvent ointressant.", "Du, [NAME], är det levande beviset på att kvantitet inte alltid innebär kvalitet."],
+  en: ["It's fascinating, [NAME], how you consistently lower the average IQ of a room simply by entering it.", "If incompetence were an Olympic sport, [NAME], you wouldn't even qualify for the bleachers.", "Arguing with you, [NAME], is like playing chess with a pigeon; you knock over the pieces and strut off as if you'd won.", "You possess a rare gift, [NAME], for turning your entire life into a cautionary tale.", "[NAME], your ability to ignore logic entirely is nothing short of a talent.", "It's almost as though you've made it your life's mission, [NAME], to prove evolution occasionally takes a coffee break.", "I'd explain it to you, [NAME], but I lack the pedagogical patience required to translate reality into your dialect.", "Watching you reason things out, [NAME], is like watching a fish attempt to climb a mountain: earnest, and hopeless.", "If you were a spice, [NAME], you'd be flour: technically an ingredient, but utterly without character.", "It's remarkable, [NAME], how confidently you hold opinions on subjects you've clearly never met.", "[NAME], your presence is like a Monday morning meeting: unavoidable, overlong, and quietly demoralizing.", "It's genuinely impressive, [NAME], how you always find the least efficient route to the simplest goal.", "Given infinite time, [NAME], you would produce, at most, a very long shopping list.", "You have an exceptional talent, [NAME], for saying absolutely nothing using a great many words.", "Asking you for advice, [NAME], is like asking a blind man for directions through fog.", "Your thought process, [NAME], seems engineered by someone who holds both logic and efficiency in quiet contempt.", "It really is impressive, [NAME], how consistent you manage to be in your lack of insight.", "You, [NAME], are the software update nobody asked for that somehow makes everything slower.", "It takes a particular kind of courage, [NAME], to be this certain of yourself while offering this little.", "I admire your persistence, [NAME], especially given that you are wrong about nearly everything.", "If incompetence were currency, [NAME], you'd be a global superpower.", "You, [NAME], are living proof that one needn't possess substance in order to occupy space.", "Listening to you, [NAME], is like watching paint dry, only less riveting.", "It's rather sad, [NAME], to consider all the potential you don't have.", "You have a unique gift, [NAME], for making every room you enter slightly worse.", "If self-awareness were a school subject, [NAME], you'd have failed before the term even began.", "You, [NAME], are the human equivalent of a typo nobody bothered to correct.", "I have met doorknobs with more charisma than you, [NAME].", "It's fascinating, [NAME], how you retain your optimism despite all evidence to the contrary.", "If I wanted a pointless opinion, [NAME], I'd ask a rock; at least it would be quiet about it.", "You, [NAME], always manage to find the most complicated way to fail.", "It's a talent in itself, [NAME], to always be the least prepared person in any given room.", "You, [NAME], are the human equivalent of an email marked 'delete without opening.'", "Your depth of knowledge, [NAME], is like a puddle in a desert: shallow, and gone the moment reality touches it.", "I could explain this to you, [NAME], but I wouldn't want to shatter your lovely illusion of competence.", "You, [NAME], manage to be so irritating it has become, in its own way, an art form.", "It's impressive how you, [NAME], never let facts get in the way of being wrong.", "If you were a film, [NAME], you'd be two hours of a screensaver.", "You've truly found your niche, [NAME]: a reliable, renewable source of mild frustration.", "It's almost as though you studied, [NAME], the art of doing things badly, and then mastered it.", "You, [NAME], are like a puzzle where someone swapped half the pieces for a different puzzle entirely.", "I admire how you, [NAME], never let a lack of talent stop you from trying.", "You, [NAME], are the social equivalent of a parking ticket.", "If you were a book, [NAME], you'd have far too many chapters about absolutely nothing.", "It's a genuine mystery, [NAME], how you manage to be this busy and accomplish this little.", "You, [NAME], are like a broken clock: right once a day, and purely by accident.", "Your presence, [NAME], is like background static one can never quite switch off.", "You have a gift, [NAME], for taking something simple and rendering it needlessly complicated.", "It's genuinely unusual, [NAME], how precisely you manage to miss the point every single time.", "You, [NAME], are the human equivalent of stepping in a puddle while wearing socks.", "It's a talent, [NAME], to speak at such length while conveying nothing whatsoever of value.", "You, [NAME], are like a bad joke nobody laughs at, least of all you.", "I'm impressed by your ability, [NAME], to never once let a good argument change your mind.", "You, [NAME], are like directions written in a language nobody speaks.", "It's a gift, [NAME], to lower the energy of a room the very moment you walk into it.", "If you were software, [NAME], you'd still be in permanent beta.", "You, [NAME], are like a cloud: the day gets noticeably brighter the moment you leave.", "It's fascinating how convinced you are, [NAME], of your own brilliance, in spite of all evidence to the contrary.", "You, [NAME], are like the instruction manual for a product that doesn't exist.", "I admire your persistence, [NAME], especially when it's in service of being wrong.", "You, [NAME], are the social equivalent of spilling milk on a keyboard.", "It really is an achievement, [NAME], to be this consistently uninteresting.", "You, [NAME], are like an echo in an empty hall: loud, and entirely without content.", "If you were a colour, [NAME], you'd be 'waiting-room beige.'", "It's a talent, [NAME], to accomplish so little with so much visible effort.", "You, [NAME], are like a television series that should have been cancelled after the pilot.", "I'd explain why you're wrong, [NAME], but that would be like explaining colour to a wall.", "You, [NAME], are like a blank page: plenty of room, and not a word on it.", "It's impressive how you, [NAME], manage to find fault even where none exists.", "You, [NAME], are the social equivalent of a delayed bus.", "It's a gift, [NAME], to be this confident while standing on so little ground.", "You, [NAME], are like a sticky note with nothing written on it.", "I admire how you, [NAME], always manage to choose the least logical path available.", "You, [NAME], are like an old phone book: nobody uses you anymore.", "It's genuinely a talent, [NAME], to be able to dampen the mood of absolutely any occasion.", "You, [NAME], are like a broken umbrella in a downpour.", "It's impressive how persistently you, [NAME], commit to your own incompetence.", "You, [NAME], are the social equivalent of forgetting your own password.", "I admire your ability, [NAME], to never once let insight get in your way.", "You, [NAME], are like a film trailer that shows every single weak moment.", "It's a genuine mystery, [NAME], how you can be this occupied and this unproductive.", "You, [NAME], are like a broken pencil tip: useless, and mildly irritating.", "It really is an achievement, [NAME], to be this reliably predictable.", "You, [NAME], are the social equivalent of stepping on a stray piece of Lego.", "I'd pay you a compliment, [NAME], but I wouldn't want to lie to you.", "You, [NAME], are like a letter that never arrived.", "It's impressive how proud you manage to be, [NAME], over so very little.", "You, [NAME], are like hold music that never quite ends.", "It's a talent, [NAME], to make a simple task look impossibly complicated.", "You, [NAME], are the social equivalent of reading a toaster's instruction manual for entertainment.", "I admire your resolve, [NAME], even when the outcome is reliably a catastrophe.", "You, [NAME], are like a shadow in broad daylight: entirely out of place.", "It really is a talent, [NAME], to lower the average of any group you join.", "You, [NAME], are like an unfinished sentence.", "It's impressive how loudly you manage to say so little, [NAME].", "You, [NAME], are the social equivalent of a fridge magnet that won't stick.", "I admire how you, [NAME], keep finding new ways to misunderstand simple instructions.", "You, [NAME], are like a broken compass: always pointing the wrong way.", "It really is an achievement, [NAME], to be this consistently uninteresting, twice in one conversation.", "You, [NAME], are living proof that quantity does not, in fact, imply quality."]
+};
+
+const uiText = {
+  fr: {
+    title: "L'Académie des Critiques Raffinées",
+    subtitle: "Établie pour l'art délicat de l'insulte polie",
+    nameLabel: "Le nom du destinataire",
+    placeholder: "Entrez un nom…",
+    genBtn: "Générer",
+    emptyOutput: "Votre critique apparaîtra ici, avec toute la délicatesse requise.",
+    fallbackName: "Cher(e) ami(e)",
+    importBtn: "Importer JSON",
+    exportBtn: "Exporter JSON",
+    countLabel: n => "Nombre de critiques : " + n,
+    exportName: "critiques_francais.json",
+    alertNoData: "Veuillez importer un fichier JSON d'abord !",
+    alertImported: n => "Import terminé ! " + n + " critiques chargées."
+  },
+  sv: {
+    title: "Akademien för Raffinerad Kritik",
+    subtitle: "Grundad för konsten att förolämpa artigt",
+    nameLabel: "Mottagarens namn",
+    placeholder: "Skriv in ett namn…",
+    genBtn: "Generera",
+    emptyOutput: "Din kritik dyker upp här, med all önskvärd finess.",
+    fallbackName: "Okänd vän",
+    importBtn: "Importera JSON",
+    exportBtn: "Exportera JSON",
+    countLabel: n => "Antal förolämpningar: " + n,
+    exportName: "kritik_svenska.json",
+    alertNoData: "Importera en JSON-fil först, tack!",
+    alertImported: n => "Import klar! " + n + " förolämpningar laddade."
+  },
+  en: {
+    title: "The Academy of Refined Critique",
+    subtitle: "Founded for the delicate art of the polite insult",
+    nameLabel: "Recipient's name",
+    placeholder: "Enter a name…",
+    genBtn: "Generate",
+    emptyOutput: "Your critique will appear here, with all due delicacy.",
+    fallbackName: "Dear friend",
+    importBtn: "Import JSON",
+    exportBtn: "Export JSON",
+    countLabel: n => "Number of insults: " + n,
+    exportName: "insults_english.json",
+    alertNoData: "Please import a JSON file first!",
+    alertImported: n => "Import complete! " + n + " insults loaded."
+  }
+};
+
+let currentLang = 'fr';
+
+const els = {
+  title: document.getElementById('title'),
+  subtitle: document.getElementById('subtitle'),
+  nameLabel: document.getElementById('nameLabel'),
+  nameInput: document.getElementById('nameInput'),
+  genBtn: document.getElementById('genBtn'),
+  output: document.getElementById('output'),
+  importBtn: document.getElementById('importBtn'),
+  exportBtn: document.getElementById('exportBtn'),
+  fileInput: document.getElementById('fileInput'),
+  count: document.getElementById('count'),
+  langBtns: document.querySelectorAll('.langbtn')
+};
+
+function applyLangUI(){
+  const t = uiText[currentLang];
+  document.documentElement.lang = currentLang;
+  els.title.textContent = t.title;
+  els.subtitle.textContent = t.subtitle;
+  els.nameLabel.textContent = t.nameLabel;
+  els.nameInput.placeholder = t.placeholder;
+  els.genBtn.textContent = t.genBtn;
+  els.importBtn.textContent = t.importBtn;
+  els.exportBtn.textContent = t.exportBtn;
+  els.output.textContent = t.emptyOutput;
+  els.output.classList.add('empty');
+  els.count.textContent = t.countLabel(insultData[currentLang].length);
+
+  els.langBtns.forEach(b => b.classList.toggle('active', b.dataset.lang === currentLang));
+}
+
+els.langBtns.forEach(btn => {
+  btn.addEventListener('click', () => {
+    currentLang = btn.dataset.lang;
+    applyLangUI();
+  });
+});
+
+els.genBtn.addEventListener('click', () => {
+  const t = uiText[currentLang];
+  const list = insultData[currentLang];
+  const name = els.nameInput.value.trim() || t.fallbackName;
+  if(!list || list.length === 0){
+    alert(t.alertNoData);
+    return;
+  }
+  const raw = list[Math.floor(Math.random() * list.length)];
+  els.output.textContent = raw.replaceAll('[NAME]', name);
+  els.output.classList.remove('empty');
+});
+
+els.exportBtn.addEventListener('click', () => {
+  const t = uiText[currentLang];
+  const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(insultData[currentLang], null, 2));
+  const a = document.createElement('a');
+  a.setAttribute("href", dataStr);
+  a.setAttribute("download", t.exportName);
+  a.click();
+});
+
+els.importBtn.addEventListener('click', () => els.fileInput.click());
+
+els.fileInput.addEventListener('change', (event) => {
+  const t = uiText[currentLang];
+  const file = event.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try{
+      const parsed = JSON.parse(e.target.result);
+      if(Array.isArray(parsed)){
+        insultData[currentLang] = parsed;
+        els.count.textContent = t.countLabel(parsed.length);
+        alert(t.alertImported(parsed.length));
+      }
+    }catch(err){
+      alert("JSON invalide / Ogiltig JSON / Invalid JSON");
+    }
+  };
+  reader.readAsText(file);
+});
+
+applyLangUI();
+
+if ("serviceWorker" in navigator) {
+  window.addEventListener("load", () => {
+    navigator.serviceWorker.register("service-worker.js").catch(() => {});
+  });
+}
+</script>
+</body>
+</html>
