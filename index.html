@@ -367,11 +367,13 @@
     padding:14mm;
     box-shadow:0 20px 50px rgba(0,0,0,0.5);
     box-sizing:border-box;
+    display:flex;
+    flex-direction:column;
   }
 
   .diploma-border{
     position:relative;
-    height:100%;
+    flex:1 1 auto;
     border:2.5px solid var(--gold);
     padding:16mm 14mm;
     display:flex;
@@ -455,13 +457,11 @@
     align-items:flex-end;
     justify-content:space-between;
     margin-top:34px;
-    gap:12px;
+    padding-right:90px;
+    gap:24px;
   }
 
-  .diploma-seal{ width:70px; flex-shrink:0; }
-  .diploma-seal svg{ width:70px; height:70px; opacity:0.92; transform:rotate(-8deg); }
-
-  .diploma-sign{ flex-grow:1; text-align:center; }
+  .diploma-sign{ flex:1; text-align:center; }
   .diploma-sign-line{
     width:70%;
     margin:0 auto 8px;
@@ -478,11 +478,31 @@
 
   .diploma-date{
     flex-shrink:0;
-    width:70px;
     font-family:'Inter', sans-serif;
     font-size:0.68rem;
     color:var(--sage);
-    text-align:right;
+    text-align:center;
+    padding-top:8px;
+  }
+  .diploma-date-line{
+    width:100px;
+    margin:0 auto 8px;
+    border-bottom:1px solid var(--ink);
+    height:22px;
+  }
+
+  .diploma-seal{
+    position:absolute;
+    right:12mm;
+    bottom:10mm;
+    width:80px;
+    pointer-events:none;
+  }
+  .diploma-seal img{
+    width:100%;
+    display:block;
+    transform:rotate(-8deg);
+    filter:drop-shadow(0 4px 7px rgba(0,0,0,0.4));
   }
 
   .diploma-motto{
@@ -601,18 +621,17 @@
         <p class="diploma-name" id="diplomaName">—</p>
         <p class="diploma-quote" id="diplomaQuote">—</p>
         <div class="diploma-footer">
-          <div class="diploma-seal">
-            <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
-              <circle cx="32" cy="32" r="30" fill="#7c2a2a"/>
-              <circle cx="32" cy="32" r="30" stroke="#af8a4e" stroke-width="1.5"/>
-              <path d="M32 12 L38 26 L52 28 L41 37 L44 51 L32 43 L20 51 L23 37 L12 28 L26 26 Z" fill="#af8a4e" opacity="0.85"/>
-            </svg>
-          </div>
           <div class="diploma-sign">
             <div class="diploma-sign-line"></div>
             <p id="diplomaPresident">Le Président de l'Académie</p>
           </div>
-          <div class="diploma-date" id="diplomaDate"></div>
+          <div class="diploma-date">
+            <div class="diploma-date-line"></div>
+            <p id="diplomaDate"></p>
+          </div>
+        </div>
+        <div class="diploma-seal">
+          <img src="seal.png" alt="Sceau de l'Académie">
         </div>
         <p class="diploma-motto">Memento Ridere</p>
       </div>

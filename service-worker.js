@@ -1,4 +1,4 @@
-const CACHE_NAME = "critiques-raffinees-v2";
+const CACHE_NAME = "critiques-raffinees-v3";
 const ASSETS = [
   "./",
   "./index.html",
@@ -6,7 +6,8 @@ const ASSETS = [
   "./icon-192.png",
   "./icon-512.png",
   "./apple-touch-icon.png",
-  "./favicon-32.png"
+  "./favicon-32.png",
+  "./seal.png"
 ];
 
 self.addEventListener("install", (event) => {
